@@ -1,5 +1,80 @@
 <?php
 
+require_once get_template_directory() . '/TGMPA/class-tgm-plugin-activation.php';
+
+add_action( 'tgmpa_register', 'starter_theme_register_required_plugins' );
+
+function starter_theme_register_required_plugins()
+{
+    $plugins = array(
+        array(
+            'name'     => 'Advanced Custom Fields Pro',
+            'slug'     => 'advanced-custom-fields-pro',
+            'source'   => get_stylesheet_directory() . '/TGMPA/plugins/advanced-custom-fields-pro.zip',
+            'required' => true,
+            'force_activation' => true,
+        ),
+        array(
+            'name'     => 'Custom Post Type UI',
+            'slug'     => 'custom-post-type-ui',
+            'required' => true,
+            'force_activation' => true,
+        ),
+        array(
+            'name'     => 'Debug Bar',
+            'slug'     => 'debug-bar',
+            'required' => false,
+        ),
+        array(
+            'name'     => 'Redirection',
+            'slug'     => 'redirection',
+            'required' => false,
+        ),
+        array(
+            'name'     => 'Simple Custom Post Order',
+            'slug'     => 'simple-custom-post-order',
+            'required' => true,
+            'force_activation' => true,
+        ),
+        array(
+            'name'     => 'Theme Check',
+            'slug'     => 'theme-check',
+            'required' => false,
+        ),
+        array(
+            'name'     => 'Timber',
+            'slug'     => 'timber-library',
+            'required' => true,
+            'force_activation' => true,
+        ),
+        array(
+            'name'     => 'Timber Debug Bar',
+            'slug'     => 'debug-bar-timber',
+            'required' => false,
+        ),
+        array(
+            'name'     => 'W3 Total Cache',
+            'slug'     => 'w3-total-cache',
+            'required' => false,
+        ),
+    );
+
+    $config = array(
+        'id'           => 'starter-theme',         // Unique ID for hashing notices for multiple instances of TGMPA.
+        'default_path' => '',                      // Default absolute path to bundled plugins.
+        'menu'         => 'tgmpa-install-plugins', // Menu slug.
+        'parent_slug'  => 'themes.php',            // Parent menu slug.
+        'capability'   => 'edit_theme_options',    // Capability needed to view plugin install page, should be a capability associated with the parent menu used.
+        'has_notices'  => true,                    // Show admin notices or not.
+        'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
+        'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
+        'is_automatic' => true,                    // Automatically activate plugins after installation or not.
+        'message'      => '',                      // Message to output right before the plugins table.
+    );
+
+    tgmpa( $plugins, $config );
+}
+
 if ( ! class_exists( 'Timber' ) ) {
 	add_action( 'admin_notices', function() {
 		echo '<div class="error"><p>Timber not activated. Make sure you activate the plugin in <a href="' . esc_url( admin_url( 'plugins.php#timber' ) ) . '">' . esc_url( admin_url( 'plugins.php') ) . '</a></p></div>';
