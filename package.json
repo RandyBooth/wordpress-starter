@@ -1,0 +1,22 @@
+{
+	"name": "wordpress-starter",
+	"title": "WordPress Starter",
+	"version": "0.1.0",
+	"author": {
+		"name": "Randy Booth"
+	},
+	"devDependencies": {
+		"bulma": "^0.6.1",
+		"grunt": "*",
+		"grunt-contrib-concat": "*",
+		"grunt-contrib-copy": "*",
+		"grunt-contrib-cssmin": "*",
+		"grunt-contrib-imagemin": "*",
+		"grunt-contrib-nodeunit": "*",
+		"grunt-contrib-sass": "*",
+		"grunt-contrib-uglify": "*",
+		"grunt-contrib-watch": "*",
+		"grunt-uncss": "*",
+		"matchdep": "*"
+	}
+}
