@@ -37,4 +37,4 @@ if ( is_day() ) {
 
 $context['posts'] = new Timber\PostQuery();
 
-Timber::render( $templates, $context );
+Timber::render( $templates, $context, $context['cache'] );

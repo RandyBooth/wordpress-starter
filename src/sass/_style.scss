@@ -1,3 +1,35 @@
+%font-nunito-sans-regular {
+  font-family: 'nunito-sans-regular', sans-serif;
+}
+
+.font-nunito-sans-regular {
+  @extend %font-nunito-sans-regular;
+}
+
+html,
 body {
-  color: red;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  position: relative;
+  margin: 0 auto;
+  color: $color-black;
+  @extend %font-nunito-sans-regular;
+  font-size: 16px;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+
+  &:focus,
+  &:hover {
+    text-decoration: none;
+  }
 }

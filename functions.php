@@ -4,25 +4,30 @@ require_once get_template_directory() . '/TGMPA/class-tgm-plugin-activation.php'
 
 add_action( 'tgmpa_register', 'starter_theme_register_required_plugins' );
 
-function starter_theme_register_required_plugins()
-{
+function starter_theme_register_required_plugins() {
     $plugins = array(
         array(
-            'name'     => 'Advanced Custom Fields Pro',
-            'slug'     => 'advanced-custom-fields-pro',
-            'source'   => get_stylesheet_directory() . '/TGMPA/plugins/advanced-custom-fields-pro.zip',
-            'required' => true,
+            'name'             => 'Advanced Custom Fields Pro',
+            'slug'             => 'advanced-custom-fields-pro',
+            'source'           => get_stylesheet_directory() . '/TGMPA/plugins/advanced-custom-fields-pro.zip',
+            'required'         => true,
             'force_activation' => true,
         ),
         array(
-            'name'     => 'Custom Post Type UI',
-            'slug'     => 'custom-post-type-ui',
-            'required' => true,
+            'name'             => 'Custom Post Type UI',
+            'slug'             => 'custom-post-type-ui',
+            'required'         => true,
             'force_activation' => true,
         ),
         array(
             'name'     => 'Debug Bar',
             'slug'     => 'debug-bar',
+            'required' => false,
+        ),
+        array(
+            'name'     => 'Post type selector for Advanced Custom Fields',
+            'slug'     => 'acf-post-type-selector',
+            'source'   => 'https://github.com/TimPerry/acf-post-type-selector/archive/v1.0.1.zip',
             'required' => false,
         ),
         array(
@@ -87,6 +92,73 @@ if ( ! class_exists( 'Timber' ) ) {
 	return;
 }
 
+function wms_admin_menu() {
+//    remove_menu_page( 'index.php' );                  //Dashboard
+//    remove_menu_page( 'edit.php' );                   //Posts
+//    remove_menu_page( 'upload.php' );                 //Media
+//    remove_menu_page( 'edit.php?post_type=page' );    //Pages
+//    remove_menu_page( 'edit-comments.php' );          //Comments
+//    remove_menu_page( 'themes.php' );                 //Appearance
+//    remove_menu_page( 'plugins.php' );                //Plugins
+//    remove_menu_page( 'users.php' );                  //Users
+//    remove_menu_page( 'tools.php' );                  //Tools
+//    remove_menu_page( 'options-general.php' );        //Settings
+
+    if (get_the_user_ip() !== '::1') {
+//        remove_menu_page( 'edit.php?post_type=acf-field-group' ); // ACF
+//        remove_menu_page( 'cptui_main_menu' ); // CPT
+    }
+}
+add_action( 'admin_menu', 'wms_admin_menu' );
+
+//function remove_admin_bar_links() {
+//    global $wp_admin_bar;
+//    $wp_admin_bar->remove_menu('new-post');
+//}
+//add_action( 'wp_before_admin_bar_render', 'remove_admin_bar_links' );
+
+//function disable_new_post() {
+//    if ( get_current_screen()->post_type == 'post' ) {
+//        wp_die( "You are not allowed to do that!" );
+//    }
+//}
+//add_action( 'load-post-new.php', 'disable_new_post' );
+
+//function wms_pre_get_posts( $query ) {
+//    if ( $query->is_main_query() && is_post_type_archive( 'blog' ) && !is_admin() ) {
+//        $query->set( 'post_type', 'blog' );
+//        $query->set( 'posts_per_page', 6 );
+//    }
+//}
+//add_action( 'pre_get_posts', 'wms_pre_get_posts' );
+
+function start_wp_enqueue_scripts() {
+    $ver = '0.1.0.0';
+    $ver_jquery = '3.2.1';
+    $template_name = 'starter';
+
+    if ( !is_admin()) {
+        wp_deregister_script( 'jquery' );
+        wp_register_script(
+            'jquery',
+            ( "//ajax.googleapis.com/ajax/libs/jquery/" . $ver_jquery . "/jquery.min.js" ),
+            array(),
+            $ver_jquery
+        );
+        wp_enqueue_script( 'jquery' );
+
+//        wp_enqueue_style( 'vegas', get_template_directory_uri() . '/assets/js/vegas/vegas.css', array(), '2.4.0' );
+//        wp_enqueue_script( 'vegas', get_template_directory_uri() . '/assets/js/vegas/vegas.js', array( 'jquery' ), '2.4.0', true );
+
+        wp_enqueue_script( 'main', get_template_directory_uri() . '/assets/js/main.js', array( 'jquery' ), $ver, true );
+
+        wp_enqueue_style( $template_name.'-fonts', get_template_directory_uri() . '/assets/css/fonts.css', array(), $ver );
+
+        wp_enqueue_style( $template_name, get_stylesheet_uri(), array(), $ver );
+    }
+}
+add_action( 'wp_enqueue_scripts', 'start_wp_enqueue_scripts' );
+
 function starter_theme_login_head() {
     wp_enqueue_style( 'admin_login', get_template_directory_uri() . '/css/admin-login.css' );
 }
@@ -101,6 +173,36 @@ function starter_theme_login_headertitle() {
     return get_option( 'blogname' );
 }
 add_filter( 'login_headertitle', 'starter_theme_login_headertitle' );
+
+function wms_register_fields() {
+    include_once( WP_PLUGIN_DIR.'/acf-post-type-selector/acf-post-type-selector.php' );
+}
+add_action( 'acf/include_fields', 'wms_register_fields' );
+
+if (function_exists( 'acf_add_options_page' )) {
+    acf_add_options_page(
+        array(
+            'icon_url'   => 'dashicons-admin-settings',
+            'menu_title' => 'Site Settings',
+            'menu_slug'  => 'starter-site-settings',
+            'page_title' => 'Site Settings',
+            'position'   => 25,
+            'redirect'   => false
+        )
+    );
+}
+
+function get_the_user_ip() {
+    if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+
+    return $ip;
+}
 
 Timber::$dirname = array('templates', 'views');
 
@@ -127,23 +229,28 @@ class StarterSite extends TimberSite {
 	}
 
 	function add_to_context( $context ) {
-		$context['foo'] = 'bar';
-		$context['stuff'] = 'I am a value set in your functions.php file';
-		$context['notes'] = 'These values are available everytime you call Timber::get_context();';
-		$context['menu'] = new TimberMenu();
-		$context['site'] = $this;
-		return $context;
-	}
+        $context['menu'] = new TimberMenu('menu_header');
+        $context['site'] = $this;
+        $context['options'] = get_fields('option');
+        $context['default_featured'] = '';
+        $context['cache'] = false;
 
-	function myfoo( $text ) {
-		$text .= ' bar!';
-		return $text;
+        if (get_the_user_ip() !== '::1') { // not local server
+            $context['cache'] = 600; // (60 * 10 = 600) 10 minutes
+        }
+
+        if (isset($context['options']['default_featured_image'])) {
+            if (!empty($context['options']['default_featured_image'])) {
+                $context['default_featured'] = new Timber\Image($context['options']['default_featured_image']);
+            }
+        }
+
+        return $context;
 	}
 
 	function add_to_twig( $twig ) {
 		/* this is where you can add your own functions to twig */
 		$twig->addExtension( new Twig_Extension_StringLoader() );
-		$twig->addFilter('myfoo', new Twig_SimpleFilter('myfoo', array($this, 'myfoo')));
 		return $twig;
 	}
 
