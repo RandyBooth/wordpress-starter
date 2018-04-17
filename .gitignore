@@ -1,2 +1,6 @@
+node_modules
 vendor
 wp-content
+.DS_Store
+.idea
+.sass-cache
