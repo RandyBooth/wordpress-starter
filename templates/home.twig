@@ -1,0 +1,175 @@
+{% extends "base.twig" %}
+
+{% block content %}
+    {% for content_item in post.get_field('content_items') %}
+        {% if content_item.acf_fc_layout == 'products' %}
+            <div class="wrapper-products">
+                <div class="container container-products">
+                    <div class="section">
+                        <div class="columns is-centered">
+                            <div class="column is-7-tablet has-text-centered">
+                                <div class="products-description">
+                                    {{ content_item.products_description }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="columns is-centered">
+                            <div class="column is-8-tablet has-text-centered">
+                                <h2 class="products-title">
+                                    {{ content_item.products_title }}
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background-image: url({{ TimberImage(content_item.products_background).src }});" class="wrapper-background">
+                    <div class="container container-products">
+                        <div class="columns is-multiline">
+                            {% for product in content_item.product_items %}
+                                <div class="product column is-12-mobile is-6-tablet is-4-desktop">
+                                    <div class="product-cover">
+                                        <img class="product-image" src="{{ TimberImage(product.product_post).src }}" alt="">
+
+                                        <div class="product-content">
+                                            <a class="product-content-link" href="{{ product.product_post.link }}">
+                                                {{ product.product_post.title }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% elseif content_item.acf_fc_layout == 'services' %}
+            <div class="wrapper-services">
+                <div class="container container-services">
+                    <div class="section">
+                        <div class="columns is-centered">
+                            <div class="column is-8-tablet has-text-centered">
+                                <h2 class="services-title">
+                                    {{ content_item.services_title }}
+                                </h2>
+                            </div>
+                        </div>
+
+                        <div class="columns is-multiline">
+                            {% for service in content_item.service_items %}
+                                <div class="service column is-12-mobile is-6-tablet is-4-desktop is-3-widescreen has-text-centered">
+                                    <div class="columns is-multiline">
+                                        <div class="column is-4-mobile is-offset-4-mobile is-6-tablet is-offset-3-tablet is-8-desktop is-offset-2-desktop">
+                                            <a class="service-circle" href="{{ service.service_post.link }}">
+                                                <img class="service-image" src="{{ TimberImage(service.service_post.small_image).src }}" alt="">
+                                            </a>
+                                        </div>
+                                        <div style="padding-top: 0; padding-bottom: 0;" class="column is-12">
+                                            <div class="service-title">
+                                                <a href="{{ service.service_post.link }}">
+                                                    {{ service.service_post.title }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div style="padding-top: 0;" class="column is-12">
+                                            <div class="service-description">
+                                                {{ service.service_post.short_description }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% elseif content_item.acf_fc_layout == 'sliders' %}
+            <div class="wrapper-sliders">
+                <div class="container container-sliders">
+                    <div class="columns is-gapless is-multiline">
+                        <div class="bxslider">
+                            {% for slider in content_item.slider_items %}
+                                {% if slider.slider_image is not empty %}
+                                <div class="slider column is-12">
+                                    <div class="columns is-multiline">
+                                        <div class="slider-padding slider-center slider-image-border column is-10-touch is-offset-1-touch is-6-desktop">
+                                            <img class="slider-image" src="{{ TimberImage(slider.slider_image).src }}" alt="">
+                                        </div>
+                                        <div class="slider-body slider-padding slider-center column is-12-mobile is-10-tablet is-offset-1-tablet is-5-desktop is-offset-1-desktop is-4-widescreen">
+                                            <div class="columns is-multiline">
+                                                {% if slider.slider_title is not empty %}
+                                                <div class="column is-12">
+                                                    <div class="slider-title">
+                                                        {{ slider.slider_title }}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                <div class="column is-12">
+                                                    {% if slider.slider_name is not empty %}
+                                                    <div class="slider-name">
+                                                        {{ slider.slider_name }}
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if slider.slider_job_title is not empty %}
+                                                    <div class="slider-job-title">
+                                                        {{ slider.slider_job_title }}
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if slider.slider_description is not empty %}
+                                                    <div class="slider-description">
+                                                        {{ slider.slider_description }}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    {% elseif content_item.acf_fc_layout == 'content' %}
+        <div class="wrapper-group-content">
+            <div class="container container-group-content">
+                <div class="section">
+                    <div class="columns">
+                        <div class="column is-12">
+                            <div class="group-content-center columns is-multiline">
+                                <div class="group-content-wrap-image column is-10-touch is-offset-1-touch is-5-desktop is-4-widescreen is-offset-1-widescreen">
+                                    {% if content_item.content_image is not empty %}
+                                    <div class="group-content-image">
+                                        <img src="{{ TimberImage(content_item.content_image).src }}" alt="">
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="group-content-wrap-body column is-10-touch is-offset-1-touch is-7-desktop is-5-widescreen is-offset-1-widescreen">
+                                    {% if content_item.content_title is not empty %}
+                                    <div class="group-content-title">
+                                        {{ content_item.content_title }}
+                                    </div>
+                                    {% endif %}
+                                    {% if content_item.content_description is not empty %}
+                                    <div class="group-content-description">
+                                        {{ content_item.content_description }}
+                                    </div>
+                                    {% endif %}
+                                    {% if content_item.content_learn_more_link is not empty %}
+                                    <div class="group-content-link">
+                                        <a href="{{ content_item.content_learn_more_link }}" >Learn More ></a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
